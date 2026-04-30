@@ -21,6 +21,7 @@ client.on('messageCreate', async (message) => {
       return message.reply("❌ You don't have permission to use this command.");
     }
 
+    // ✅ FIRST MESSAGE BUTTONS (BOTH)
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
         .setCustomId('resend')
@@ -51,7 +52,16 @@ If it works, click **It Works** to support us 👍`,
 client.on('interactionCreate', async (interaction) => {
   if (!interaction.isButton()) return;
 
+  // ✅ SECOND MESSAGE BUTTON (ONLY WORKS)
+  const worksOnlyRow = new ActionRowBuilder().addComponents(
+    new ButtonBuilder()
+      .setCustomId('works')
+      .setLabel('It Works')
+      .setStyle(ButtonStyle.Success)
+  );
+
   if (interaction.customId === 'resend') {
+
     await interaction.reply({
       content: `🔄 New Mod Sent!
 
@@ -61,17 +71,32 @@ Only works in version 1.21.11.
 
 Give it a try and see if this one works better.`,
       files: ["./Pickles_to_Skellys_fixed.jar"],
+      components: [worksOnlyRow] // 👈 ONLY WORKS BUTTON
     });
   }
 
   if (interaction.customId === 'works') {
+
+    const vouchChannelId = "1497861898073407559";
+    const vouchChannel = interaction.client.channels.cache.get(vouchChannelId);
+
+    if (vouchChannel) {
+      await vouchChannel.send({
+        content: `💬 **New Vouch!**
+
+<@${interaction.user.id}> used our mod and it worked ✅
+
+🔥 Thanks for the support!`
+      });
+    }
+
     await interaction.reply({
       content: `✅ Glad it worked!
 
 Thanks for confirming 🙌  
 Your support helps us improve and provide better mods.
 
-Enjoy it 💯`,
+Enjoy it 💯`
     });
   }
 });
