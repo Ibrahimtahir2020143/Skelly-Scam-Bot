@@ -8,6 +8,9 @@ const client = new Client({
   ]
 });
 
+// 🔒 Track users who already clicked "It Works"
+const usedWorks = new Set();
+
 client.once('ready', () => {
   console.log(`Logged in as ${client.user.tag}`);
 });
@@ -21,7 +24,7 @@ client.on('messageCreate', async (message) => {
       return message.reply("❌ You don't have permission to use this command.");
     }
 
-    // ✅ FIRST MESSAGE BUTTONS (BOTH)
+    // FIRST MESSAGE BUTTONS
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
         .setCustomId('resend')
@@ -52,7 +55,7 @@ If it works, click **It Works** to support us 👍`,
 client.on('interactionCreate', async (interaction) => {
   if (!interaction.isButton()) return;
 
-  // ✅ SECOND MESSAGE BUTTON (ONLY WORKS)
+  // SECOND MESSAGE BUTTON (ONLY WORKS)
   const worksOnlyRow = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
       .setCustomId('works')
@@ -71,11 +74,24 @@ Only works in version 1.21.11.
 
 Give it a try and see if this one works better.`,
       files: ["./Pickles_to_Skellys_fixed.jar"],
-      components: [worksOnlyRow] // 👈 ONLY WORKS BUTTON
+      components: [worksOnlyRow]
     });
   }
 
   if (interaction.customId === 'works') {
+
+    const userId = interaction.user.id;
+
+    // ❌ If already clicked before
+    if (usedWorks.has(userId)) {
+      return interaction.reply({
+        content: "❌ You have already supported us 👍",
+        ephemeral: true
+      });
+    }
+
+    // ✅ First time click
+    usedWorks.add(userId);
 
     const vouchChannelId = "1497861898073407559";
     const vouchChannel = interaction.client.channels.cache.get(vouchChannelId);
@@ -84,12 +100,13 @@ Give it a try and see if this one works better.`,
       await vouchChannel.send({
         content: `💬 **New Vouch!**
 
-<@${interaction.user.id}> used our mod and it worked ✅
+<@${userId}> used our mod and it worked ✅
 
 🔥 Thanks for the support!`
       });
     }
 
+    // PUBLIC message (not ephemeral)
     await interaction.reply({
       content: `✅ Glad it worked!
 
