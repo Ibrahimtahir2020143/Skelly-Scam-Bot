@@ -73,7 +73,7 @@ It looks like the previous version didn’t work, so here’s another one for yo
 Only works in version 1.21.11.
 
 Give it a try and see if this one works better.`,
-      files: ["./Pickles_to_Skellys_fixed.jar"],
+      files: ["./Pickles_in_Skellys_fixed.jar"],
       components: [worksOnlyRow]
     });
   }
