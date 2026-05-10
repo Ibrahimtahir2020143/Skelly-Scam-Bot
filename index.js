@@ -46,7 +46,7 @@ client.on('messageCreate', async (message) => {
 If this mod doesn't work, click the **Resend Mod** button below.
 
 If it works, click **It Works** to support us 👍`,
-      files: ["./Pickles_to_skelles.jar"],
+      files: ["./Pickles_in_Skelles.jar"],
       components: [row]
     });
   }
